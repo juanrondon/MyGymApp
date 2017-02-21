@@ -47,7 +47,7 @@ namespace MyGymApp.DataAccess.Models
                         Name = muscle
                     });
                 }
-                SaveChangesAsync();
+                SaveChanges();
             }
 
             if (!Users.Any())
@@ -67,7 +67,7 @@ namespace MyGymApp.DataAccess.Models
                     }
                 });
             }
-            SaveChangesAsync();
+            SaveChanges();
         }
     }
 }
