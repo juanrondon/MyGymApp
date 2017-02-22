@@ -16,6 +16,9 @@ namespace MyGymApp.DataAccess.Models
         [Column(TypeName = "varchar(max)")]
         public string Description { get; set; }
         public List<WorkoutSession> WorkoutSessions { get; set; }
+        [Required]
+        public int UserId { get; set; }
+        public User User { get; set; }
 
         public WorkoutPlan()
         {

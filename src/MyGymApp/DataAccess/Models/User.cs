@@ -13,7 +13,7 @@ namespace MyGymApp.DataAccess.Models
         [Column(TypeName = "varchar(20)")]
         public string LastName { get; set; }
         [Column(TypeName = "varchar(13)")]
-        public string mobileNumber { get; set; }
+        public string MobileNumber { get; set; }
         [Required]
         [Column(TypeName = "varchar(30)")]
         public string Email { get; set; }

@@ -6,18 +6,19 @@ using Microsoft.AspNetCore.Mvc;
 using MyGymApp.DataAccess.Models;
 using MyGymApp.Services;
 using MyGymApp.UI.Models.WorkoutSessionViewModels;
+using MyGymApp.Commands.WorkoutSession;
 
 namespace MyGymApp.UI.Controllers
 {
     public class WorkoutSessionController : Controller
     {
-        private MyGymAppDbContext _context;
-        private WorkoutSessionApplicationService _WorkoutSessionService;
+        private readonly MyGymAppDbContext _context;
+        private readonly WorkoutSessionApplicationService _workoutSessionService;
 
         public WorkoutSessionController(MyGymAppDbContext context, WorkoutSessionApplicationService workoutSessionService)
         {
             _context = context;
-            _WorkoutSessionService = workoutSessionService;
+            _workoutSessionService = workoutSessionService;
         }
 
         [HttpGet]
@@ -28,7 +29,7 @@ namespace MyGymApp.UI.Controllers
                 Id = ws.WorkoutSessionId,
                 Description = ws.Description,
                 Date = ws.Date,
-                WorkoutRecords = ws.WorkoutRecords.Count                
+                WorkoutRecords = ws.WorkoutRecords.Count
             }).ToList();
             return View(results);
         }
@@ -41,6 +42,24 @@ namespace MyGymApp.UI.Controllers
             if (workoutPlanId != null)
             {
                 model.workoutPlanId = workoutPlanId.Value;
+            }
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route("MyWorkoutSessions/Create")]
+        public async Task<IActionResult> Create(WorkoutSessionCreateViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var command = new CreateWorkoutSessionCommand
+                {
+                    Description = model.Description,
+                    Date = model.Date,
+                    //TODO: Complete logic
+                };
+                var workoutSession = await _workoutSessionService.AddWorkoutSession(command);
+                return RedirectToAction("Index");
             }
             return View(model);
         }

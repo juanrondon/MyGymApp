@@ -34,7 +34,8 @@ namespace MyGymApp.UI
             services.AddMvc();
             // Services DI
 
-            services.AddScoped<WorkoutSessionApplicationService>();                
+            services.AddScoped<WorkoutSessionApplicationService>()
+                .AddScoped<WorkoutPlanApplicationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

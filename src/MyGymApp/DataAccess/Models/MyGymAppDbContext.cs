@@ -20,26 +20,26 @@ namespace MyGymApp.DataAccess.Models
         //Seed some initial data
         public void Seed()
         {
-            if (!Muscles.Any())
+            string[] muscles = {
+                "Full Body",
+                "Neck",
+                "Shoulders",
+                "Chest",
+                "Biceps",
+                "Forearms",
+                "Abs",
+                "Quads",
+                "Traps",
+                "Triceps",
+                "Lats",
+                "Middle Back",
+                "Lower Back",
+                "Glutes",
+                "Hamstring",
+                "Calves"
+            };
+            if (Muscles != null && !Muscles.Any())
             {
-                string[] muscles = {
-                    "Full Body",
-                    "Neck",
-                    "Shoulders",
-                    "Chest",
-                    "Biceps",
-                    "Forearms",
-                    "Abs",
-                    "Quads",
-                    "Traps",
-                    "Triceps",
-                    "Lats",
-                    "Middle Back",
-                    "Lower Back",
-                    "Glutes",
-                    "Hamstring",
-                    "Calves"
-                };
                 foreach (string muscle in muscles)
                 {
                     Muscles.Add(new Muscle
@@ -50,14 +50,14 @@ namespace MyGymApp.DataAccess.Models
                 SaveChanges();
             }
 
-            if (!Users.Any())
+            if (Users != null && !Users.Any())
             {
                 Users.Add(new User
                 {
                     FirstName = "Juan",
                     LastName = "Rondon",
                     Email = "Juanrondon@me.com",
-                    mobileNumber = "0415677654",
+                    MobileNumber = "0415677654",
                     Address = new Address
                     {
                         StreetNumber = "21-23",
