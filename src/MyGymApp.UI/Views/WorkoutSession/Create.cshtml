@@ -82,7 +82,7 @@
                                 <div class="form-group">
                                     <label class="col-md-2 control-label">Target Muscles</label>
                                     <div class="col-md-10">
-                                        <select multiple="multiple" id="musclesList" class="form-control" name="WorkoutRecords[0].MusclesListIds" style="width: 300px;"></select>
+                                        <select multiple="multiple" id="musclesList" name="WorkoutRecords[0].MusclesListIds" style="width: 300px;"></select>
                                     </div>
                                 </div>
                             </div>
@@ -106,7 +106,7 @@
                     format: "dd/MM/yyyy"
                 });
 
-               $("#musclesList").kendoMultiSelect({
+                $("#musclesList").kendoMultiSelect({
                     placeholder: "Select Muscles...",
                     dataTextField: "name",
                     dataValueField: "muscleId",
