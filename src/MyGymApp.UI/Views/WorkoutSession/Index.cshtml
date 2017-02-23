@@ -35,7 +35,7 @@
                     @Html.DisplayFor(modelItem => item.Date)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.WorkoutRecords)
+                    <span class="badge">@item.WorkoutRecords</span><a href="#"> Workouts </a>
                 </td>
                 <td>
                     @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |

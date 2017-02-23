@@ -4,8 +4,9 @@
     ViewData["Title"] = "Create";
 }
 <h3>Create workout Session</h3>
-<form asp-action="Create">
+<form asp-action="Create" id="form">
     <div class="container">
+        <div asp-validation-summary="All" class="text-danger"></div>
         <div class="row">
             <div class="col-md-12">
                 <div class="panel-group" id="accordion">
@@ -21,19 +22,16 @@
                         <div id="collapseOne" class="panel-collapse collapse in">
                             <div class="form-horizontal">
                                 <hr />
-                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                 <div class="form-group">
                                     <label asp-for="Description" class="col-md-2 control-label"></label>
                                     <div class="col-md-10">
                                         <textarea asp-for="Description" rows="4" class="form-control"></textarea>
-                                        <span asp-validation-for="Description" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label asp-for="Date" class="col-md-2 control-label"></label>
                                     <div class="col-md-10">
                                         <input asp-for="Date" class="form-control" id="datePicker" />
-                                        <span asp-validation-for="Date" class="text-danger"></span>
                                     </div>
                                 </div>
                             </div>
@@ -49,41 +47,28 @@
                             </h4>
                         </div>
                         <div id="collapseTwo" class="panel-collapse collapse">
-                            <div class="form-horizontal">
+                            <div class="form-inline">
                                 <hr />
                                 <div class="form-group">
-                                    <label asp-for="WorkoutRecords[0].ActivityName" class="col-md-2 control-label"></label>
-                                    <div class="col-md-10">
-                                        <input asp-for="WorkoutRecords[0].ActivityName" class="form-control" />
-                                        <span asp-validation-for="WorkoutRecords[0].ActivityName" class="text-danger"></span>
-                                    </div>
+                                    <input asp-for="WorkoutRecords[0].ActivityName" placeholder="Activity" class="form-control" style="width: 400px;" />
+
                                 </div>
                                 <div class="form-group">
-                                    <label asp-for="WorkoutRecords[0].Duration" class="col-md-2 control-label"></label>
-                                    <div class="col-md-10">
-                                        <input asp-for="WorkoutRecords[0].Duration" class="form-control" />
-                                        <span asp-validation-for="WorkoutRecords[0].Duration" class="text-danger"></span>
-                                    </div>
+                                    <input asp-for="WorkoutRecords[0].Duration" class="form-control duration" style="width: 150px;" />
+
                                 </div>
                                 <div class="form-group">
-                                    <label asp-for="WorkoutRecords[0].Sets" class="col-md-2 control-label"></label>
-                                    <div class="col-md-10">
-                                        <input asp-for="WorkoutRecords[0].Sets" class="form-control" />
-                                        <span asp-validation-for="WorkoutRecords[0].Sets" class="text-danger"></span>
-                                    </div>
+                                    <input asp-for="WorkoutRecords[0].Sets" class="form-control sets" style="width: 100px;" />
+
                                 </div>
                                 <div class="form-group">
-                                    <label asp-for="WorkoutRecords[0].Reps" class="col-md-2 control-label"></label>
-                                    <div class="col-md-10">
-                                        <input asp-for="WorkoutRecords[0].Reps" class="form-control" />
-                                        <span asp-validation-for="WorkoutRecords[0].Reps" class="text-danger"></span>
-                                    </div>
+                                    <input asp-for="WorkoutRecords[0].Reps" class="form-control reps" style="width: 100px;" />
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-md-2 control-label">Target Muscles</label>
-                                    <div class="col-md-10">
-                                        <select multiple="multiple" id="musclesList" name="WorkoutRecords[0].MusclesListIds" style="width: 300px;"></select>
-                                    </div>
+                                    <select multiple="multiple" id="musclesList" name="WorkoutRecords[0].MusclesListIds" style="width: 300px;"></select>
+                                </div>
+                                <div class="form-group">
+                                    <button id="remove" class="btn btn-danger">Remove</button>
                                 </div>
                             </div>
                         </div>
@@ -105,9 +90,24 @@
                     min: new Date(),
                     format: "dd/MM/yyyy"
                 });
+                $(".duration").kendoNumericTextBox({
+                    min: 0,
+                    placeholder: "Duration (min)",
+                    format: "## Minutes"
+                });
+                $(".sets").kendoNumericTextBox({
+                    min: 0,
+                    placeholder: "Sets",
+                    format: "## sets"
+                });
+                $(".reps").kendoNumericTextBox({
+                    min: 0,
+                    placeholder: "Reps",
+                    format: "## reps"
+                });
 
                 $("#musclesList").kendoMultiSelect({
-                    placeholder: "Select Muscles...",
+                    placeholder: "Select Targeted Muscles ...",
                     dataTextField: "name",
                     dataValueField: "muscleId",
                     autoBind: false,
