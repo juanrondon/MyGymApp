@@ -3,43 +3,126 @@
 @{
     ViewData["Title"] = "Create";
 }
-
-<h2>Create Workout Session</h2>
-
+<h3>Create workout Session</h3>
 <form asp-action="Create">
-    <div class="form-horizontal">
-        <hr />
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group">
-            <label asp-for="Description" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <textarea  asp-for="Description" rows="4" class="form-control"></textarea>
-                <span asp-validation-for="Description" class="text-danger" />
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Date" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Date" class="form-control" id="datePicker" />
-                <span asp-validation-for="Date" class="text-danger" />
-            </div>
-        </div>
-
-        <input asp-for="workoutPlanId" class="form-control hidden" />
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel-group" id="accordion">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                    <span class="glyphicon glyphicon-file">
+                                    </span> Details
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse in">
+                            <div class="form-horizontal">
+                                <hr />
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <div class="form-group">
+                                    <label asp-for="Description" class="col-md-2 control-label"></label>
+                                    <div class="col-md-10">
+                                        <textarea asp-for="Description" rows="4" class="form-control"></textarea>
+                                        <span asp-validation-for="Description" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Date" class="col-md-2 control-label"></label>
+                                    <div class="col-md-10">
+                                        <input asp-for="Date" class="form-control" id="datePicker" />
+                                        <span asp-validation-for="Date" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                                    <span class="glyphicon glyphicon-plus-sign">
+                                    </span> Add Workout
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseTwo" class="panel-collapse collapse">
+                            <div class="form-horizontal">
+                                <hr />
+                                <div class="form-group">
+                                    <label asp-for="WorkoutRecords[0].ActivityName" class="col-md-2 control-label"></label>
+                                    <div class="col-md-10">
+                                        <input asp-for="WorkoutRecords[0].ActivityName" class="form-control" />
+                                        <span asp-validation-for="WorkoutRecords[0].ActivityName" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="WorkoutRecords[0].Duration" class="col-md-2 control-label"></label>
+                                    <div class="col-md-10">
+                                        <input asp-for="WorkoutRecords[0].Duration" class="form-control" />
+                                        <span asp-validation-for="WorkoutRecords[0].Duration" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="WorkoutRecords[0].Sets" class="col-md-2 control-label"></label>
+                                    <div class="col-md-10">
+                                        <input asp-for="WorkoutRecords[0].Sets" class="form-control" />
+                                        <span asp-validation-for="WorkoutRecords[0].Sets" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="WorkoutRecords[0].Reps" class="col-md-2 control-label"></label>
+                                    <div class="col-md-10">
+                                        <input asp-for="WorkoutRecords[0].Reps" class="form-control" />
+                                        <span asp-validation-for="WorkoutRecords[0].Reps" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">Target Muscles</label>
+                                    <div class="col-md-10">
+                                        <select multiple="multiple" id="musclesList" class="form-control" name="WorkoutRecords[0].MusclesListIds" style="width: 300px;"></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </div>
     </div>
 </form>
 
-<div>
-    <a asp-action="Index">Back to List of Workout Sessions</a>
-</div>
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script src="~/js/WorkoutSessionCreate.js"></script>
+    <script>
+        (function () {
+            $(document).ready(function () {
+                $("#datePicker").kendoDatePicker({
+                    value: new Date(),
+                    min: new Date(),
+                    format: "dd/MM/yyyy"
+                });
+
+               $("#musclesList").kendoMultiSelect({
+                    placeholder: "Select Muscles...",
+                    dataTextField: "name",
+                    dataValueField: "muscleId",
+                    autoBind: false,
+                    dataSource: {
+                        transport: {
+                            read: {
+                                url: "/WorkoutSession/getmuscles",
+                                contentType: "application/json; charset=utf-8",
+                                type: "GET",
+                                dataType: "json"
+                            }
+                        }
+                    }
+                });
+            });
+        })();
+    </script>
 }

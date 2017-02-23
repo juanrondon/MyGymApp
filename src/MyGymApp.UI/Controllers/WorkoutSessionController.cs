@@ -1,8 +1,7 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MyGymApp.DataAccess.Models;
 using MyGymApp.Services;
 using MyGymApp.UI.Models.WorkoutSessionViewModels;
@@ -36,32 +35,38 @@ namespace MyGymApp.UI.Controllers
 
         [HttpGet]
         [Route("MyWorkoutSessions/Create")]
-        public IActionResult Create(int? workoutPlanId)
+        public IActionResult Create()
         {
-            var model = new WorkoutSessionCreateViewModel();
-            if (workoutPlanId != null)
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult GetMuscles()
+        {
+            var result = _context.Muscles.ToList();
+            if (!result.Any())
             {
-                model.workoutPlanId = workoutPlanId.Value;
+                return NotFound();
             }
-            return View(model);
+            return Ok(result);
         }
 
         [HttpPost]
         [Route("MyWorkoutSessions/Create")]
         public async Task<IActionResult> Create(WorkoutSessionCreateViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var command = new CreateWorkoutSessionCommand
-                {
-                    Description = model.Description,
-                    Date = model.Date,
-                    //TODO: Complete logic
-                };
-                var workoutSession = await _workoutSessionService.AddWorkoutSession(command);
-                return RedirectToAction("Index");
+                return View(model);
             }
-            return View(model);
+            var command = new CreateWorkoutSessionCommand
+            {
+                Description = model.Description,
+                Date = model.Date
+                //TODO: Complete logic
+            };
+            await _workoutSessionService.AddWorkoutSession(command);
+            return RedirectToAction("Index");
         }
     }
 }

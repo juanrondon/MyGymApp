@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using MyGymApp.DataAccess.Models;
+using MyGymApp.UI.Models.WorkoutRecordViewModels;
 
 namespace MyGymApp.UI.Models.WorkoutSessionViewModels
 {
@@ -12,6 +13,6 @@ namespace MyGymApp.UI.Models.WorkoutSessionViewModels
         public string Description { get; set; }
         [Required]
         public DateTime Date { get; set; }
-        public int workoutPlanId { get; set; }
+        public List<AddWorkoutRecordViewModel> WorkoutRecords { get; set; }
     }
 }

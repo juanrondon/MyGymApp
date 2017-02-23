@@ -18,9 +18,6 @@ namespace MyGymApp.DataAccess.Models
         public int UserId { get; set; }
         public User User { get; set; }
 
-        public int? WorkoutPlanId { get; set; }
-        public WorkoutPlan WorkoutPlan { get; set; }
-
         public List<WorkoutRecord> WorkoutRecords { get; set; }
 
         public WorkoutSession()

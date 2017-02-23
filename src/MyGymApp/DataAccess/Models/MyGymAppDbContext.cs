@@ -6,10 +6,8 @@ namespace MyGymApp.DataAccess.Models
     public class MyGymAppDbContext : DbContext
     {
         public DbSet<Address> Addresses { get; set; }
-        public DbSet<Exercise> Exercises { get; set; }
         public DbSet<Administrator> Administrators { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<WorkoutPlan> WorkoutPlans { get; set; }
         public DbSet<WorkoutRecord> WorkoutRecords { get; set; }
         public DbSet<WorkoutSession> WorkoutSessions { get; set; }
         public DbSet<Muscle> Muscles { get; set; }

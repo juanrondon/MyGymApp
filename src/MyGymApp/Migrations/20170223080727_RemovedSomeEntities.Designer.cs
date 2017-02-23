@@ -8,9 +8,10 @@ using MyGymApp.DataAccess.Models;
 namespace MyGymApp.Migrations
 {
     [DbContext(typeof(MyGymAppDbContext))]
-    partial class MyGymAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170223080727_RemovedSomeEntities")]
+    partial class RemovedSomeEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1")

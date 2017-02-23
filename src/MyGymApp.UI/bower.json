@@ -6,7 +6,8 @@
     "jquery": "2.2.0",
     "jquery-validation": "1.14.0",
     "jquery-validation-unobtrusive": "3.2.6",
-    "kendo-ui-core": "2017.1.216"
+    "kendo-ui-core": "2017.1.216",
+    "handlebars": "^4.0.5"
   },
   "resolutions": {
     "jquery": ">= 1.7.2"
