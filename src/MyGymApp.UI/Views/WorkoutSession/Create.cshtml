@@ -47,30 +47,32 @@
                             </h4>
                         </div>
                         <div id="collapseTwo" class="panel-collapse collapse">
-                            <div class="form-inline">
-                                <hr />
-                                <div class="form-group">
-                                    <input asp-for="WorkoutRecords[0].ActivityName" placeholder="Activity" class="form-control" style="width: 400px;" />
+                            @*<div class="form-inline">
+                                    <hr />
+                                    <div class="form-group">
+                                        <input asp-for="WorkoutRecords[0].ActivityName" placeholder="Activity" class="form-control" style="width: 400px;" />
 
-                                </div>
-                                <div class="form-group">
-                                    <input asp-for="WorkoutRecords[0].Duration" class="form-control duration" style="width: 150px;" />
+                                    </div>
+                                    <div class="form-group">
+                                        <input asp-for="WorkoutRecords[0].Duration" class="form-control duration" style="width: 150px;" />
 
-                                </div>
-                                <div class="form-group">
-                                    <input asp-for="WorkoutRecords[0].Sets" class="form-control sets" style="width: 100px;" />
+                                    </div>
+                                    <div class="form-group">
+                                        <input asp-for="WorkoutRecords[0].Sets" class="form-control sets" style="width: 100px;" />
 
-                                </div>
-                                <div class="form-group">
-                                    <input asp-for="WorkoutRecords[0].Reps" class="form-control reps" style="width: 100px;" />
-                                </div>
-                                <div class="form-group">
-                                    <select multiple="multiple" id="musclesList" name="WorkoutRecords[0].MusclesListIds" style="width: 300px;"></select>
-                                </div>
-                                <div class="form-group">
-                                    <button id="remove" class="btn btn-danger">Remove</button>
-                                </div>
-                            </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <input asp-for="WorkoutRecords[0].Reps" class="form-control reps" style="width: 100px;" />
+                                    </div>
+                                    <div class="form-group">
+                                        <select multiple="multiple" id="musclesList" name="WorkoutRecords[0].MusclesListIds" style="width: 300px;"></select>
+                                    </div>
+                                    <div class="form-group">
+                                        <button id="remove" class="btn btn-danger">Remove</button>
+                                    </div>
+                                </div>*@
+                            <button id="add-workout-btn" type="button" class="btn btn-primary">Add workout</button>
+                            <div id="putHere"></div>
                         </div>
                     </div>
                 </div>
@@ -82,45 +84,83 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/lib/handlebars/handlebars.js"></script>
+    @*Handlebars template*@
+    <script id="entry-template" type="text/x-handlebars-template">
+        <div class="form-inline">
+            <hr />
+            <div class="form-group">
+                <input name="WorkoutRecords[{{i}}].ActivityName" placeholder="Activity" class="form-control" style="width: 400px;" />
+
+            </div>
+            <div class="form-group">
+                <input name="WorkoutRecords[{{i}}].Duration" id="duration{{i}}" class="form-control duration" style="width: 150px;" />
+
+            </div>
+            <div class="form-group">
+                <input name="WorkoutRecords[{{i}}].Sets" id="sets{{i}}" class="form-control sets" style="width: 100px;" />
+
+            </div>
+            <div class="form-group">
+                <input name="WorkoutRecords[{{i}}].Reps" id="reps{{i}}"  class="form-control reps" style="width: 100px;" />
+            </div>
+            <div class="form-group">
+                <select multiple="multiple" id="musclesList{{i}}" name="WorkoutRecords[{{i}}].MusclesListIds" style="width: 300px;"></select>
+            </div>
+            <div class="form-group">
+                <button id="remove{{i}}" class="btn btn-danger">Remove</button>
+            </div>
+        </div>
+    </script>
+
     <script>
         (function () {
-            $(document).ready(function () {
-                $("#datePicker").kendoDatePicker({
-                    value: new Date(),
-                    min: new Date(),
-                    format: "dd/MM/yyyy"
-                });
-                $(".duration").kendoNumericTextBox({
-                    min: 0,
-                    placeholder: "Duration (min)",
-                    format: "## Minutes"
-                });
-                $(".sets").kendoNumericTextBox({
-                    min: 0,
-                    placeholder: "Sets",
-                    format: "## sets"
-                });
-                $(".reps").kendoNumericTextBox({
-                    min: 0,
-                    placeholder: "Reps",
-                    format: "## reps"
-                });
+            var source = $("#entry-template").html();
+            var template = Handlebars.compile(source);
+            var pos = -1;
 
-                $("#musclesList").kendoMultiSelect({
-                    placeholder: "Select Targeted Muscles ...",
-                    dataTextField: "name",
-                    dataValueField: "muscleId",
-                    autoBind: false,
-                    dataSource: {
-                        transport: {
-                            read: {
-                                url: "/WorkoutSession/getmuscles",
-                                contentType: "application/json; charset=utf-8",
-                                type: "GET",
-                                dataType: "json"
+            $(document).ready(function () {
+                $("#add-workout-btn").click(function (event) {
+                    var data = { i: ++pos };
+                    var html = template(data);
+                    $("#putHere").append(html);
+
+                    $("#datePicker").kendoDatePicker({
+                        value: new Date(),
+                        min: new Date(),
+                        format: "dd/MM/yyyy"
+                    });
+                    $("#duration" + pos).kendoNumericTextBox({
+                        min: 0,
+                        placeholder: "Duration (min)",
+                        format: "## Minutes"
+                    });
+                    $("#sets" + pos).kendoNumericTextBox({
+                        min: 0,
+                        placeholder: "Sets",
+                        format: "## sets"
+                    });
+                    $("#reps" + pos).kendoNumericTextBox({
+                        min: 0,
+                        placeholder: "Reps",
+                        format: "## reps"
+                    });
+                    $("#musclesList"+pos).kendoMultiSelect({
+                        placeholder: "Select Targeted Muscles ...",
+                        dataTextField: "name",
+                        dataValueField: "muscleId",
+                        autoBind: false,
+                        dataSource: {
+                            transport: {
+                                read: {
+                                    url: "/WorkoutSession/getmuscles",
+                                    contentType: "application/json; charset=utf-8",
+                                    type: "GET",
+                                    dataType: "json"
+                                }
                             }
                         }
-                    }
+                    });
                 });
             });
         })();
