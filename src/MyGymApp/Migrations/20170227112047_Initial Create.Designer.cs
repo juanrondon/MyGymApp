@@ -8,13 +8,13 @@ using MyGymApp.DataAccess.Models;
 namespace MyGymApp.Migrations
 {
     [DbContext(typeof(MyGymAppDbContext))]
-    [Migration("20170220063634_InitialCreate")]
+    [Migration("20170227112047_Initial Create")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "1.0.1")
+                .HasAnnotation("ProductVersion", "1.1.0-rtm-22752")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("MyGymApp.DataAccess.Models.Address", b =>
@@ -55,24 +55,6 @@ namespace MyGymApp.Migrations
                     b.ToTable("Administrators");
                 });
 
-            modelBuilder.Entity("MyGymApp.DataAccess.Models.Exercise", b =>
-                {
-                    b.Property<int>("ExerciseId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("varchar(20)");
-
-                    b.Property<string>("TargetedMuscles")
-                        .IsRequired()
-                        .HasColumnType("varchar(50)");
-
-                    b.HasKey("ExerciseId");
-
-                    b.ToTable("Exercises");
-                });
-
             modelBuilder.Entity("MyGymApp.DataAccess.Models.Muscle", b =>
                 {
                     b.Property<int>("MuscleId")
@@ -109,7 +91,7 @@ namespace MyGymApp.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(20)");
 
-                    b.Property<string>("mobileNumber")
+                    b.Property<string>("MobileNumber")
                         .HasColumnType("varchar(13)");
 
                     b.HasKey("UserId");
@@ -119,31 +101,15 @@ namespace MyGymApp.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("MyGymApp.DataAccess.Models.WorkoutPlan", b =>
-                {
-                    b.Property<int>("WorkoutPlanId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Description")
-                        .HasColumnType("varchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("varchar(30)");
-
-                    b.HasKey("WorkoutPlanId");
-
-                    b.ToTable("WorkoutPlans");
-                });
-
             modelBuilder.Entity("MyGymApp.DataAccess.Models.WorkoutRecord", b =>
                 {
                     b.Property<int>("WorkoutRecordId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("DurationInMinutes");
+                    b.Property<string>("ActivityName")
+                        .IsRequired();
 
-                    b.Property<int>("ExerciseId");
+                    b.Property<int?>("DurationInMinutes");
 
                     b.Property<int?>("NumberOfReps");
 
@@ -153,11 +119,22 @@ namespace MyGymApp.Migrations
 
                     b.HasKey("WorkoutRecordId");
 
-                    b.HasIndex("ExerciseId");
-
                     b.HasIndex("WorkoutSessionId");
 
                     b.ToTable("WorkoutRecords");
+                });
+
+            modelBuilder.Entity("MyGymApp.DataAccess.Models.WorkoutRecordMuscle", b =>
+                {
+                    b.Property<int>("MuscleId");
+
+                    b.Property<int>("WorkoutRecordId");
+
+                    b.HasKey("MuscleId", "WorkoutRecordId");
+
+                    b.HasIndex("WorkoutRecordId");
+
+                    b.ToTable("WorkoutRecordMuscles");
                 });
 
             modelBuilder.Entity("MyGymApp.DataAccess.Models.WorkoutSession", b =>
@@ -173,13 +150,9 @@ namespace MyGymApp.Migrations
 
                     b.Property<int>("UserId");
 
-                    b.Property<int?>("WorkoutPlanId");
-
                     b.HasKey("WorkoutSessionId");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("WorkoutPlanId");
 
                     b.ToTable("WorkoutSessions");
                 });
@@ -201,14 +174,22 @@ namespace MyGymApp.Migrations
 
             modelBuilder.Entity("MyGymApp.DataAccess.Models.WorkoutRecord", b =>
                 {
-                    b.HasOne("MyGymApp.DataAccess.Models.Exercise", "Exercise")
-                        .WithMany()
-                        .HasForeignKey("ExerciseId")
+                    b.HasOne("MyGymApp.DataAccess.Models.WorkoutSession", "WorkoutSession")
+                        .WithMany("WorkoutRecords")
+                        .HasForeignKey("WorkoutSessionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("MyGymApp.DataAccess.Models.WorkoutRecordMuscle", b =>
+                {
+                    b.HasOne("MyGymApp.DataAccess.Models.Muscle", "Muscle")
+                        .WithMany("WorkoutRecords")
+                        .HasForeignKey("MuscleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("MyGymApp.DataAccess.Models.WorkoutSession", "WorkoutSession")
-                        .WithMany()
-                        .HasForeignKey("WorkoutSessionId")
+                    b.HasOne("MyGymApp.DataAccess.Models.WorkoutRecord", "WorkoutRecord")
+                        .WithMany("MusclesTargeted")
+                        .HasForeignKey("WorkoutRecordId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -218,10 +199,6 @@ namespace MyGymApp.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("MyGymApp.DataAccess.Models.WorkoutPlan", "WorkoutPlan")
-                        .WithMany("WorkoutSessions")
-                        .HasForeignKey("WorkoutPlanId");
                 });
         }
     }

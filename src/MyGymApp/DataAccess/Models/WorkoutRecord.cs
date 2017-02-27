@@ -11,9 +11,14 @@ namespace MyGymApp.DataAccess.Models
         public int? DurationInMinutes { get; set; }
         public int? NumberOfSets { get; set; }
         public int? NumberOfReps { get; set; }
-        public List<Muscle> MusclesTargeted{ get; set; }
+        public List<WorkoutRecordMuscle> MusclesTargeted{ get; set; }
         [Required]
         public int WorkoutSessionId { get; set; }
         public WorkoutSession WorkoutSession { get; set; }
+
+        public WorkoutRecord()
+        {
+                MusclesTargeted = new List<WorkoutRecordMuscle>();
+        }
     }
 }

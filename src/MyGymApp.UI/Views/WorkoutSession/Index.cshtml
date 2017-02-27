@@ -13,10 +13,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                @Html.DisplayNameFor(model => model.Date)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Date)
+                @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.WorkoutRecords)
@@ -29,13 +29,13 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.Date)
                 </td>
                 <td>
-                    <span class="badge">@item.WorkoutRecords</span><a href="#"> Workouts </a>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    <span class="badge">@item.WorkoutRecords</span><a href="#"> Activities </a>
                 </td>
                 <td>
                     @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |

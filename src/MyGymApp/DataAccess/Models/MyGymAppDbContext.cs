@@ -9,12 +9,18 @@ namespace MyGymApp.DataAccess.Models
         public DbSet<Administrator> Administrators { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<WorkoutRecord> WorkoutRecords { get; set; }
+        public DbSet<WorkoutRecordMuscle> WorkoutRecordMuscles { get; set; }
         public DbSet<WorkoutSession> WorkoutSessions { get; set; }
         public DbSet<Muscle> Muscles { get; set; }
 
 
         public MyGymAppDbContext(DbContextOptions<MyGymAppDbContext> options) : base(options) { }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<WorkoutRecordMuscle>()
+                .HasKey(c => new { c.MuscleId, c.WorkoutRecordId });
+        }
         //Seed some initial data
         public void Seed()
         {

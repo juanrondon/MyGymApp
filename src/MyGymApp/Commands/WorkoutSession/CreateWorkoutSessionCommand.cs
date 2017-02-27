@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MyGymApp.DataAccess.Models;
 
 namespace MyGymApp.Commands.WorkoutSession
 {
@@ -9,7 +10,7 @@ namespace MyGymApp.Commands.WorkoutSession
     {
         public string Description { get; set; }        
         public DateTime Date { get; set; }
-        public int WorkoutPlanId { get; set; }
+        public List<WorkoutRecord> WorkoutRecords { get; set; }
         public int UserId { get; set; }
     }
 }

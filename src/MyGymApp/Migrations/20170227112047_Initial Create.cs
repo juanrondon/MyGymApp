@@ -26,20 +26,6 @@ namespace MyGymApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Exercises",
-                columns: table => new
-                {
-                    ExerciseId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "varchar(20)", nullable: false),
-                    TargetedMuscles = table.Column<string>(type: "varchar(50)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Exercises", x => x.ExerciseId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Muscles",
                 columns: table => new
                 {
@@ -50,20 +36,6 @@ namespace MyGymApp.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Muscles", x => x.MuscleId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "WorkoutPlans",
-                columns: table => new
-                {
-                    WorkoutPlanId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Description = table.Column<string>(type: "varchar(max)", nullable: true),
-                    Name = table.Column<string>(type: "varchar(30)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_WorkoutPlans", x => x.WorkoutPlanId);
                 });
 
             migrationBuilder.CreateTable(
@@ -78,7 +50,7 @@ namespace MyGymApp.Migrations
                     Email = table.Column<string>(type: "varchar(30)", nullable: false),
                     FirstName = table.Column<string>(type: "varchar(20)", nullable: false),
                     LastName = table.Column<string>(type: "varchar(20)", nullable: false),
-                    mobileNumber = table.Column<string>(type: "varchar(13)", nullable: true)
+                    MobileNumber = table.Column<string>(type: "varchar(13)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -118,8 +90,7 @@ namespace MyGymApp.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Date = table.Column<DateTime>(nullable: false),
                     Description = table.Column<string>(type: "varchar(max)", nullable: false),
-                    UserId = table.Column<int>(nullable: false),
-                    WorkoutPlanId = table.Column<int>(nullable: true)
+                    UserId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -130,12 +101,6 @@ namespace MyGymApp.Migrations
                         principalTable: "Users",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_WorkoutSessions_WorkoutPlans_WorkoutPlanId",
-                        column: x => x.WorkoutPlanId,
-                        principalTable: "WorkoutPlans",
-                        principalColumn: "WorkoutPlanId",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -144,8 +109,8 @@ namespace MyGymApp.Migrations
                 {
                     WorkoutRecordId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ActivityName = table.Column<string>(nullable: false),
                     DurationInMinutes = table.Column<int>(nullable: true),
-                    ExerciseId = table.Column<int>(nullable: false),
                     NumberOfReps = table.Column<int>(nullable: true),
                     NumberOfSets = table.Column<int>(nullable: true),
                     WorkoutSessionId = table.Column<int>(nullable: false)
@@ -154,16 +119,34 @@ namespace MyGymApp.Migrations
                 {
                     table.PrimaryKey("PK_WorkoutRecords", x => x.WorkoutRecordId);
                     table.ForeignKey(
-                        name: "FK_WorkoutRecords_Exercises_ExerciseId",
-                        column: x => x.ExerciseId,
-                        principalTable: "Exercises",
-                        principalColumn: "ExerciseId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_WorkoutRecords_WorkoutSessions_WorkoutSessionId",
                         column: x => x.WorkoutSessionId,
                         principalTable: "WorkoutSessions",
                         principalColumn: "WorkoutSessionId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "WorkoutRecordMuscles",
+                columns: table => new
+                {
+                    MuscleId = table.Column<int>(nullable: false),
+                    WorkoutRecordId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WorkoutRecordMuscles", x => new { x.MuscleId, x.WorkoutRecordId });
+                    table.ForeignKey(
+                        name: "FK_WorkoutRecordMuscles_Muscles_MuscleId",
+                        column: x => x.MuscleId,
+                        principalTable: "Muscles",
+                        principalColumn: "MuscleId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_WorkoutRecordMuscles_WorkoutRecords_WorkoutRecordId",
+                        column: x => x.WorkoutRecordId,
+                        principalTable: "WorkoutRecords",
+                        principalColumn: "WorkoutRecordId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -178,24 +161,19 @@ namespace MyGymApp.Migrations
                 column: "AddressId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_WorkoutRecords_ExerciseId",
-                table: "WorkoutRecords",
-                column: "ExerciseId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_WorkoutRecords_WorkoutSessionId",
                 table: "WorkoutRecords",
                 column: "WorkoutSessionId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_WorkoutRecordMuscles_WorkoutRecordId",
+                table: "WorkoutRecordMuscles",
+                column: "WorkoutRecordId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_WorkoutSessions_UserId",
                 table: "WorkoutSessions",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_WorkoutSessions_WorkoutPlanId",
-                table: "WorkoutSessions",
-                column: "WorkoutPlanId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -204,22 +182,19 @@ namespace MyGymApp.Migrations
                 name: "Administrators");
 
             migrationBuilder.DropTable(
+                name: "WorkoutRecordMuscles");
+
+            migrationBuilder.DropTable(
                 name: "Muscles");
 
             migrationBuilder.DropTable(
                 name: "WorkoutRecords");
 
             migrationBuilder.DropTable(
-                name: "Exercises");
-
-            migrationBuilder.DropTable(
                 name: "WorkoutSessions");
 
             migrationBuilder.DropTable(
                 name: "Users");
-
-            migrationBuilder.DropTable(
-                name: "WorkoutPlans");
 
             migrationBuilder.DropTable(
                 name: "Addresses");

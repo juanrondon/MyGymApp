@@ -19,6 +19,7 @@ namespace MyGymApp.Services
             {
                 Description = command.Description,
                 Date = command.Date,
+                WorkoutRecords = command.WorkoutRecords,
                 UserId = 1 // TODO : Change to proper userId
             };
             _context.WorkoutSessions.Add(workoutSession);

@@ -1,7 +1,7 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using MyGymApp.DataAccess.Models;
 using MyGymApp.Services;
 using MyGymApp.UI.Models.WorkoutSessionViewModels;
@@ -29,7 +29,7 @@ namespace MyGymApp.UI.Controllers
                 Description = ws.Description,
                 Date = ws.Date,
                 WorkoutRecords = ws.WorkoutRecords.Count
-            }).ToList();
+            }).OrderByDescending(d => d.Date).ToList();
             return View(results);
         }
 
@@ -62,8 +62,18 @@ namespace MyGymApp.UI.Controllers
             var command = new CreateWorkoutSessionCommand
             {
                 Description = model.Description,
-                Date = model.Date
-                //TODO: Complete logic
+                Date = model.Date,
+                WorkoutRecords = model.WorkoutRecords.Select(wr => new WorkoutRecord()
+                {
+                    ActivityName = wr.ActivityName,
+                    DurationInMinutes = wr.Duration,
+                    NumberOfReps = wr.Reps,
+                    NumberOfSets = wr.Sets,
+                    MusclesTargeted = wr.MusclesListIds.Select(w => new WorkoutRecordMuscle
+                    {
+                        MuscleId = w
+                    }).ToList()
+                }).ToList()
             };
             await _workoutSessionService.AddWorkoutSession(command);
             return RedirectToAction("Index");

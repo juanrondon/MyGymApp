@@ -13,7 +13,7 @@ namespace MyGymApp.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "1.0.1")
+                .HasAnnotation("ProductVersion", "1.1.0-rtm-22752")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("MyGymApp.DataAccess.Models.Address", b =>
@@ -62,11 +62,7 @@ namespace MyGymApp.Migrations
                     b.Property<string>("Name")
                         .IsRequired();
 
-                    b.Property<int?>("WorkoutRecordId");
-
                     b.HasKey("MuscleId");
-
-                    b.HasIndex("WorkoutRecordId");
 
                     b.ToTable("Muscles");
                 });
@@ -109,6 +105,9 @@ namespace MyGymApp.Migrations
                     b.Property<int>("WorkoutRecordId")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("ActivityName")
+                        .IsRequired();
+
                     b.Property<int?>("DurationInMinutes");
 
                     b.Property<int?>("NumberOfReps");
@@ -122,6 +121,19 @@ namespace MyGymApp.Migrations
                     b.HasIndex("WorkoutSessionId");
 
                     b.ToTable("WorkoutRecords");
+                });
+
+            modelBuilder.Entity("MyGymApp.DataAccess.Models.WorkoutRecordMuscle", b =>
+                {
+                    b.Property<int>("MuscleId");
+
+                    b.Property<int>("WorkoutRecordId");
+
+                    b.HasKey("MuscleId", "WorkoutRecordId");
+
+                    b.HasIndex("WorkoutRecordId");
+
+                    b.ToTable("WorkoutRecordMuscles");
                 });
 
             modelBuilder.Entity("MyGymApp.DataAccess.Models.WorkoutSession", b =>
@@ -152,13 +164,6 @@ namespace MyGymApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("MyGymApp.DataAccess.Models.Muscle", b =>
-                {
-                    b.HasOne("MyGymApp.DataAccess.Models.WorkoutRecord")
-                        .WithMany("MusclesTargeted")
-                        .HasForeignKey("WorkoutRecordId");
-                });
-
             modelBuilder.Entity("MyGymApp.DataAccess.Models.User", b =>
                 {
                     b.HasOne("MyGymApp.DataAccess.Models.Address", "Address")
@@ -171,6 +176,19 @@ namespace MyGymApp.Migrations
                     b.HasOne("MyGymApp.DataAccess.Models.WorkoutSession", "WorkoutSession")
                         .WithMany("WorkoutRecords")
                         .HasForeignKey("WorkoutSessionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("MyGymApp.DataAccess.Models.WorkoutRecordMuscle", b =>
+                {
+                    b.HasOne("MyGymApp.DataAccess.Models.Muscle", "Muscle")
+                        .WithMany("WorkoutRecords")
+                        .HasForeignKey("MuscleId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("MyGymApp.DataAccess.Models.WorkoutRecord", "WorkoutRecord")
+                        .WithMany("MusclesTargeted")
+                        .HasForeignKey("WorkoutRecordId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
